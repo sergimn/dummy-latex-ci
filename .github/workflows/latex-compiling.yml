@@ -10,11 +10,18 @@ jobs:
         uses: dante-ev/latex-action@latest
         with:
           root_file: main.tex
-      - name: Publish to GitHub pages
-        if: success() && github.ref == 'refs/heads/main'
-        uses: crazy-max/ghaction-github-pages@v1
+      - name: Upload binaries to Github release
+        if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+        continue-on-error: false
+        uses: svenstaro/upload-release-action@v2
         with:
-          target_branch: gh-pages
-          build_dir: .
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: main.tex
+          tag: ${{ github.ref }}
+          overwrite: true
+          file_glob: true
+            # <--- Use environment variables that was created earlier - see https://github.com/svenstaro/upload-release-action
+            # Single-quotes do not solve the multiline problem.
+          body: |
+            ## ${{steps.tag.outputs.tag}}
+            ${{ env.RELEASE_BODY }}

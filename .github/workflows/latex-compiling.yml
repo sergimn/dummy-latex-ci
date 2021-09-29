@@ -18,7 +18,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: main.pdf
           tag: ${{ github.ref }}
-          overwrite: false
+          overwrite: true
           file_glob: true
             # <--- Use environment variables that was created earlier - see https://github.com/svenstaro/upload-release-action
             # Single-quotes do not solve the multiline problem.
